@@ -1,3 +1,5 @@
+import os
+
 try:
     import local_settings
 except ImportError:
@@ -6,3 +8,5 @@ except ImportError:
 DEBUG = getattr(local_settings, 'LOCAL_DEBUG', True)
 
 ALLOWED_HOSTS = ['*']
+
+PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
