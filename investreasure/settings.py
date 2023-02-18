@@ -12,3 +12,21 @@ ALLOWED_HOSTS = ['*']
 PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
 
 ROOT_URLCONF = 'urls'
+
+SECRET_KEY = getattr(local_settings, 'LOCAL_SECRET_KEY', '')
+
+STATIC_URL = '/static/'
+
+INSTALLED_APPS = [
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.staticfiles',
+    'base',
+    'history',
+]
+
+
+'''=======================USER_OPTION======================='''
+MAIN_URL = 'http://iss.moex.com/iss'
+AUTH_URL = 'https://passport.moex.com/authenticate'
+REQUEST_RETURN_TYPE = 'json'

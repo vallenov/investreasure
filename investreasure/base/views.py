@@ -3,27 +3,29 @@ import sys
 
 from rest_framework.views import APIView
 
-# import investreasure.index.serializers as cs
-# import investreasure.index.models as cms
+from common.api import (
+    ResponseMixin,
+)
+from moex.moex import moex
 
 logger = logging.getLogger('index')
 
 
-class IndexAllView(APIView):
+class MOEXBaseView(APIView):
 
     def get(self, request):
         """
-        Определение качества звонка
+        Получение всех направлений мониторинга
         """
         response = dict()
         try:
-            response = {
-                'test': 'OK'
-            }
+            response = moex.moex_request(
+                road_map_path=moex.road_map['base'][request.path.split('/')[-1]]
+            )
         except Exception as exc:
             logger.exception(f'Failed get call quality: {exc}')
         finally:
             exc_info = sys.exc_info()
             if exc_info[0] is not None:
                 logger.exception(f"{request.path} has failed")
-            return response
+            return ResponseMixin(response)
