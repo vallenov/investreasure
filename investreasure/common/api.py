@@ -1,11 +1,15 @@
+import logging
 import typing
 import json
+import requests
 
 from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
 from rest_framework.serializers import BaseSerializer
 
 from django.http import HttpResponse
+
+logger = logging.getLogger('index')
 
 
 def get_input_data(
@@ -54,4 +58,30 @@ def get_validated_data_or_raise(
 class ResponseMixin(HttpResponse):
     # все респонсы должны быть инстансами этого класса
     def __init__(self, content=None):
-        super().__init__(content=json.dumps(content))
+        super().__init__(content=json.dumps(content, ensure_ascii=False))
+
+
+def regular_request(url: str, method: str = 'GET', data: dict = None) -> dict:
+    """
+    Regular request to site
+    """
+    headers = {
+        'User-Agent': 'Mozilla/5.0',
+        'Connection': 'close'
+    }
+    try:
+        logger.info(f'Try to get info from {url}')
+        if method.upper() == 'GET':
+            resp = requests.get(url, headers=headers)
+        elif method.upper() == 'POST':
+            resp = requests.post(url, headers=headers, data=data)
+        else:
+            raise TypeError
+        if resp.status_code == 200:
+            resp = json.loads(resp.text)
+            logger.info(f'Get successful')
+            return resp
+        else:
+            logger.error(f'Bad status of response: {resp.status_code}')
+    except Exception as ex:
+        logger.exception(f'{ex}')
