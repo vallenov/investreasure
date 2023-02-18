@@ -23,3 +23,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'index',
 ]
+
+
+'''=======================USER_OPTION======================='''
+MAIN_URL = 'http://iss.moex.com/iss'
+REQUEST_RETURN_TYPE = 'json'
