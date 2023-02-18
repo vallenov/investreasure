@@ -15,7 +15,7 @@ from settings import (
 logger = logging.getLogger('index')
 
 
-class IndexAllView(APIView):
+class IndexView(APIView):
 
     def get(self, request):
         """
