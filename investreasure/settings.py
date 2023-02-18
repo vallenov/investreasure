@@ -21,10 +21,12 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.staticfiles',
-    'index',
+    'base',
+    'history',
 ]
 
 
 '''=======================USER_OPTION======================='''
 MAIN_URL = 'http://iss.moex.com/iss'
+AUTH_URL = 'https://passport.moex.com/authenticate'
 REQUEST_RETURN_TYPE = 'json'
