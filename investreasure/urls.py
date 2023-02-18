@@ -1,7 +1,8 @@
 from django.urls import path, include
 
 urlpatterns = [
-    path('index/', include('index.urls')),
+    path('base/', include('base.urls')),
+    path('history/', include('history.urls')),
 ]
 
 # API versioning

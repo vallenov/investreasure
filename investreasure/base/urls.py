@@ -4,5 +4,5 @@ from . import views
 
 
 urlpatterns = [
-    re_path(r'^$', views.IndexView.as_view()),
+    re_path(r'^index$', views.MOEXBaseView.as_view()),
 ]
