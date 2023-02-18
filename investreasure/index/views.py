@@ -5,12 +5,8 @@ from rest_framework.views import APIView
 
 from common.api import (
     ResponseMixin,
-    regular_request,
 )
-from settings import (
-    MAIN_URL,
-    REQUEST_RETURN_TYPE
-)
+from moex.moex import moex
 
 logger = logging.getLogger('index')
 
@@ -23,14 +19,7 @@ class IndexView(APIView):
         """
         response = dict()
         try:
-            raw_data = regular_request(f'{MAIN_URL}/index.{REQUEST_RETURN_TYPE}')
-            for key, val in raw_data.items():
-                if key == 'metadata':
-                    continue
-                response[key] = []
-                for data in val['data']:
-                    row = dict(zip(val['columns'], data))
-                    response[key].append(row)
+            response = moex.index()
         except Exception as exc:
             logger.exception(f'Failed get call quality: {exc}')
         finally:
