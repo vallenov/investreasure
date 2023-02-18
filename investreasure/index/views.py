@@ -3,7 +3,14 @@ import sys
 
 from rest_framework.views import APIView
 
-from common.api import ResponseMixin
+from common.api import (
+    ResponseMixin,
+    regular_request,
+)
+from settings import (
+    MAIN_URL,
+    REQUEST_RETURN_TYPE
+)
 
 logger = logging.getLogger('index')
 
@@ -16,9 +23,14 @@ class IndexAllView(APIView):
         """
         response = dict()
         try:
-            response = {
-                'test': 'OK'
-            }
+            raw_data = regular_request(f'{MAIN_URL}/index.{REQUEST_RETURN_TYPE}')
+            for key, val in raw_data.items():
+                if key == 'metadata':
+                    continue
+                response[key] = []
+                for data in val['data']:
+                    row = dict(zip(val['columns'], data))
+                    response[key].append(row)
         except Exception as exc:
             logger.exception(f'Failed get call quality: {exc}')
         finally:
