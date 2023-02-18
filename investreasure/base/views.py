@@ -11,7 +11,7 @@ from moex.moex import moex
 logger = logging.getLogger('index')
 
 
-class IndexView(APIView):
+class MOEXBaseView(APIView):
 
     def get(self, request):
         """
@@ -19,7 +19,9 @@ class IndexView(APIView):
         """
         response = dict()
         try:
-            response = moex.index()
+            response = moex.moex_request(
+                road_map_path=moex.road_map['base'][request.path.split('/')[-1]]
+            )
         except Exception as exc:
             logger.exception(f'Failed get call quality: {exc}')
         finally:
