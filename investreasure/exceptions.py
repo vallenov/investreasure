@@ -25,7 +25,7 @@ class InvestreasureException(Exception):
 
     def __init__(self, *args, **kwargs):
         self.context = {
-            'error_type': self.CODES[kwargs.get('type', 'UNKNOWN_ERROR')],
+            'exception_code': self.CODES[kwargs.get('type', 'UNKNOWN_ERROR')],
         }
         for key, value in kwargs.items():
             self.context[key] = value
