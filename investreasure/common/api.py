@@ -2,6 +2,7 @@ import logging
 import typing
 import json
 import requests
+from requests.models import Response
 
 from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
@@ -9,7 +10,9 @@ from rest_framework.serializers import BaseSerializer
 
 from django.http import HttpResponse
 
-logger = logging.getLogger('index')
+from exceptions import InvestreasureException
+
+logger = logging.getLogger('common.api')
 
 
 def get_input_data(
@@ -55,6 +58,33 @@ def get_validated_data_or_raise(
     return data
 
 
+class BaseMetadata:
+    def __init__(self, code=None, message=None):
+        self.code = code
+        self.message = message
+
+    def to_dict(self):
+        resp_dict = {
+            'code': self.code,
+            'message': self.message
+        }
+        if hasattr(self, 'context'):
+            resp_dict['context'] = getattr(self, 'context')
+        return resp_dict
+
+
+class BaseResponse:
+    def __init__(self, data: dict = None, metadata: BaseMetadata = None):
+        self.data = data
+        self.metadata = metadata
+
+    def to_dict(self):
+        return {
+            'data': self.data,
+            'metadata': self.metadata.to_dict()
+        }
+
+
 class ResponseMixin(HttpResponse):
     # все респонсы должны быть инстансами этого класса
     def __init__(self, content=None):
@@ -66,7 +96,7 @@ def regular_request(
         method: str = 'GET',
         data: dict = None,
         cookies: dict = None,
-) -> dict:
+) -> Response:
     """
     Regular request to site
     """
@@ -82,14 +112,10 @@ def regular_request(
             resp = requests.post(url, headers=headers, data=data, cookies=cookies)
         else:
             raise TypeError
-        if resp.status_code == 200:
-            resp = json.loads(resp.text)
-            logger.info(f'Get successful')
-            return resp
-        else:
-            logger.error(f'Bad status of response: {resp.status_code}')
+        return resp
     except Exception as ex:
         logger.exception(f'{ex}')
+        raise InvestreasureException(type='INTERNET_ERROR')
 
 
 def get_params_from_request(request: Request) -> str or None:
