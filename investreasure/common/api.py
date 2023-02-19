@@ -118,8 +118,23 @@ def regular_request(
         raise InvestreasureException(type='INTERNET_ERROR')
 
 
-def get_params_from_request(request: Request) -> str or None:
+def get_params_from_dict(params_dict: dict) -> str or None:
     params = []
-    for key, val in request.query_params.items():
+    for key, val in params_dict.items():
         params.append(f'{key}={val}')
     return '?' + '&'.join(params) if params else None
+
+
+def get_json_from_post(request: Request):
+    return json.loads(request.body)
+
+
+def fields_filter(inp: list, fields: list):
+    out = []
+    for index, item in enumerate(inp):
+        tmp = {}
+        for key, val in item.items():
+            if key in fields:
+                tmp[key] = val
+        out.append(tmp)
+    return out
