@@ -26,7 +26,6 @@ class MOEXHistoryView(APIView):
                 road_map_path=moex.road_map['history'][request.path.split('/')[-1]],
                 params=params
             )
-            raise InvestreasureException(type='INTERNET_ERROR')
         except InvestreasureException as ite:
             response.metadata.context = ite.context
         except Exception as exc:
