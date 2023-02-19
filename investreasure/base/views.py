@@ -17,7 +17,7 @@ class MOEXBaseView(APIView):
         """
         Получение всех направлений мониторинга
         """
-        response = dict()
+        response = None
         try:
             response = moex.moex_request(
                 road_map_path=moex.road_map['base'][request.path.split('/')[-1]]
@@ -28,4 +28,4 @@ class MOEXBaseView(APIView):
             exc_info = sys.exc_info()
             if exc_info[0] is not None:
                 logger.exception(f"{request.path} has failed")
-            return ResponseMixin(response)
+            return ResponseMixin(response.to_dict())
